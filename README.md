@@ -1,6 +1,6 @@
 # vuetify-application
 
-> A Vue.js project
+> A meetup application built with Vue.js with a Firebase integration
 
 ## Build Setup
 
