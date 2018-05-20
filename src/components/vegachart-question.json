@@ -1,0 +1,288 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "width": 1200,
+  "height": 400,
+  "padding": 5,
+  "background": "#0b1e39",
+  "signals": [
+    {
+      "name": "clear",
+      "value": true,
+      "on": [
+        {
+          "events": "mouseup[!event.item]",
+          "update": "true",
+          "force": true
+        }
+      ]
+    },
+    {
+      "name": "clicked",
+      "value": null,
+      "on": [
+        {
+          "events": "@legendSymbol:click, @legendLabel:click",
+          "update": "{value: datum.value}",
+          "force": true
+        }
+      ]
+    }
+  ],
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {
+          "currentskill": 22.3,
+          "potential": 24,
+          "age": 18.44
+        },
+        {
+          "currentskill": 42.3,
+          "potential": 31,
+          "age": 19.48
+        },
+        {
+          "currentskill": 43.4,
+          "potential": 54,
+          "age": 20.48
+        },
+        {
+          "currentskill": 29.2,
+          "potential": 25,
+          "age": 21.49
+        },
+        {
+          "currentskill": 38.2,
+          "potential": 11,
+          "age": 22.49
+        },
+        {
+          "currentskill": 32.2,
+          "potential": 8,
+          "age": 23.49
+        },
+        {
+          "currentskill": 44.2,
+          "potential": 8,
+          "age": 24.49
+        }
+      ]
+    },
+    {
+      "name": "legend",
+      "values": [
+        {
+          "name": "Current Skill"
+        },
+        {
+          "name": "Potential"
+        }
+      ]
+    },
+    {
+      "name": "selected",
+      "on": [
+        {
+          "trigger": "clear",
+          "remove": true
+        },
+        {
+          "trigger": "clicked",
+          "insert": "clicked"
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "range": "width",
+      "nice": true,
+      "zero": false,
+      "domain": {
+        "data": "table",
+        "field": "age"
+      }
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "range": "height",
+      "nice": true,
+      "zero": true,
+      "domain": {
+        "data": "table",
+        "field": "potential"
+      }
+    },
+    {
+      "name": "maincolor",
+      "type": "linear",
+      "range": "category",
+      "domain": {
+        "data": "table",
+        "field": "currentskill"
+      }
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {
+        "data": "legend",
+        "field": "name"
+      },
+      "range": [
+        "#0579ff",
+        "#fff"
+      ]
+    }
+  ],
+  "axes": [
+    {
+      "orient": "bottom",
+      "title": "Age",
+      "scale": "x",
+      "tickCount": 5
+    },
+    {
+      "orient": "left",
+      "title": "Current / Potential",
+      "scale": "y",
+      "grid": true,
+      "tickCount": 4
+    }
+  ],
+  "marks": [
+    {
+      "name": "currentSkill",
+      "type": "line",
+      "from": {
+        "data": "table"
+      },
+      "encode": {
+        "enter": {
+          "x": {
+            "scale": "x",
+            "field": "age"
+          },
+          "y": {
+            "scale": "y",
+            "field": "currentskill"
+          },
+          "stroke": {
+            "value": "#0579ff"
+          },
+          "strokeWidth": {
+            "value": 3
+          }
+        },
+        "update": {
+          "shape": {
+            "value": "line"
+          },
+          "opacity": [
+            {
+              "test": "(!length(data('selected')) || indata('selected', 'value', datum[0]))",
+              "value": 1
+            },
+            {
+              "value": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "potential",
+      "type": "line",
+      "from": {
+        "data": "table"
+      },
+      "encode": {
+        "enter": {
+          "x": {
+            "scale": "x",
+            "field": "age"
+          },
+          "y": {
+            "scale": "y",
+            "field": "potential"
+          },
+          "stroke": {
+            "value": "#fff",
+            "opacity": 1
+          },
+          "strokeWidth": {
+            "value": 3
+          }
+        },
+        "update": {
+          "shape": {
+            "value": "line"
+          },
+          "opacity": [
+            {
+              "test": "(!length(data('selected')) || indata('selected', 'value', datum[0]))",
+              "value": 1
+            },
+            {
+              "value": 0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "legends": [
+    {
+      "stroke": "color",
+      "orient": "top-left",
+      "encode": {
+        "symbols": {
+          "name": "legendSymbol",
+          "interactive": true,
+          "update": {
+            "fill": {
+              "value": "transparent"
+            },
+            "strokeWidth": {
+              "value": 2
+            },
+            "size": {
+              "value": 64
+            },
+            "opacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 1},
+              {"value": 0.25}
+            ]
+          }
+        },
+        "labels": {
+          "name": "legendLabel",
+          "interactive": true,
+          "update": {
+            "fontSize": {
+              "value": 16
+            },
+            "fill": {
+              "value": "#fff"
+            },
+            "update": {
+              "opacity": [
+              {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 1},
+              {"value": 0.25}
+            ]
+            }
+          },
+          "hover": {
+            "fill": {
+              "value": "#ddd"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
